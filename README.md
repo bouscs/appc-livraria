@@ -11,7 +11,7 @@ Para iniciar o programa é necessário um arquivo `.env` contendo as variáveis 
 ## Checklist
 - [x] cadastreAutor(conexao)
 
-- [ ] removaAutor(conexao)
+- [x] removaAutor(conexao)
  
 - [ ] listeAutor(conexao)
 
