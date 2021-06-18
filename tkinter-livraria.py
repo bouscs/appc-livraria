@@ -12,36 +12,42 @@ def cadastreAutor(conexao):
     cursor = conexao.cursor()
     nome = txtNomeAutor.get() #recupera o que foi digitado na caixa de texto txtNomeAutor
 
+    '''if nome == False:
+        lblmsg["text"] = 'Caixa NOME DO AUTOR vazia'
+    '''
+
     try:
         cursor.execute("INSERT INTO Autores (Id,Nome) VALUES (seqAutores.nextval,'" + nome + "')")
         conexao.commit()
         lblmsg["text"] = 'Autor cadastrado com sucesso'
     except cx_Oracle.DatabaseError:
         lblmsg["text"] = 'Não foi possivel cadastrar o autor'
-    
+
+
     txtNome.delete(0,END) #limpa o que estava escrito na caixa de texto txtNome
-    '''
-        Talvez vai precisar add mais txt.delete(0,end)
-    '''
+    txtIdAutor.delete(0,END) #limpa o que estava escrito na caixa de texto txtIdAutor
 
 
 #OPCAO 2
 def removaAutor(conexao):
     cursor = conexao.cursor()
-    nome = txtNomeAutor.get() #recupera o que foi digitdo na caixa de texto txtNomeAutor
+    idAutor = txtIdAutor.get() #recupera o que foi digitdo na caixa de texto txtIdAutor
 
-    cursor.execute("SELECT Id, Nome FROM Autores WHERE Nome='" + nome + "'")
+    cursor.execute(f"SELECT * FROM Autores WHERE Id = {idAutor}")
     conexao.commit()
 
     linha = cursor.fetchone()
     if not linha:
         lblmsg["text"] = 'Autor inexistente'
     else:
-        cursor.execute("DELETE FROM Autores WHERE Nome='" + nome + "'")
+        cursor.execute("DELETE FROM Autores WHERE Id = idAutor")
         conexao.commit()
         lblmsg["text"] = 'Autor removido com sucesso'
 
-    txtNomeAutor.delete(0,END) #limpa o que estava escrito na caixa de texto txtNomeAutor
+
+
+    txtNome.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
+    txtIdAutor.delete(0,END) #limpa o que estava escrito na caixa de texto txtNomeAutor
 
 
 #OPCAO 3
