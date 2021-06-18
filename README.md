@@ -8,6 +8,7 @@
 ## Como Usar
 Para iniciar o programa é necessário um arquivo `.env` contendo as variáveis exemplificadas em `.env_example`
 
+## Checklist
 - [x] cadastreAutor(conexao)
 
 - [ ] removaAutor(conexao)
