@@ -169,7 +169,7 @@ def programa():
     txtIdAutor.pack(side=LEFT)
 
     btnBuscar = Button(painelDeBusca, text="Buscar", font=fonte, width=10)
-    btnBuscar["command"] = buscarAutor
+    btnBuscar["command"] = lambda: buscarAutor(conexao)
     btnBuscar.pack(side=RIGHT)
 
     # ---
@@ -195,7 +195,7 @@ def programa():
     painelDeBotoes.pack()
 
     bntInsert = Button(painelDeBotoes, text="Inserir", font=fonte, width=12)
-    bntInsert["command"] = cadastreAutor
+    bntInsert["command"] = lambda: cadastreAutor(conexao)
     bntInsert.pack(side=LEFT)
 
     '''bntAlterar = Button(painelDeBotoes, text="Alterar", font=fonte, width=12)
@@ -203,7 +203,7 @@ def programa():
     bntAlterar.pack(side=LEFT)'''
 
     bntExcluir = Button(painelDeBotoes, text="Excluir", font=fonte, width=12)
-    bntExcluir["command"] = removaAutor
+    bntExcluir["command"] = lambda: removaAutor(conexao)
     bntExcluir.pack(side=LEFT)
 
     # ---
