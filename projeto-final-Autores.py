@@ -1,13 +1,29 @@
-import os
+'''import os
 
 os.chdir("C:")
 os.chdir("C:\\Users\\Shinjo-PC\\Documents\\Downloads\\instantclient-basic-windows.x64-19.11.0.0.0dbru\\instantclient_19_11")
 
 # coding: utf-8
-import cx_Oracle
+import cx_Oracle'''
 
 from tkinter import *
 
+# OPCAO 0
+def buscarAutor(conexao):
+    idAutor = txtIdAutor.get()
+
+    cursor = conexao.cursor()
+    nomeAutor = cursor.execute(f"SELECT Nome FROM Autores WHERE Id = {idAutor}")
+    conexao.commit()
+
+    if not nomeAutor:
+        lblmsg["text"] = 'Não foi possivel encontrar o autor'
+    else:
+        lglmsg["text"] = 'Autor encontrado com sucesso'
+        txtNomeAutor.insert(INSERT, nomeAutor)
+
+    txtNomeAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
+    txtIdAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtIdAutor
 
 # OPCAO 1
 def cadastreAutor(conexao):
@@ -51,83 +67,6 @@ def removaAutor(conexao):
 
 # OPCAO 3
 # def listeAutor(conexao):
-
-# OPCAO 4
-def cadastreLivro(conexao):
-    cursor = conexao.cursor()
-    nomeLivro = txtNomeLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
-
-    try:
-        precoLivro = txtPrecoLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
-    except ValueError:
-        lblmsg["text"] = 'Preço inválido'
-
-    else:
-        nomeAutor = txtNomeAutor.get()  # recupera o que foi digitado na caixa de texto txtNomeAutor
-
-        cursor.execute("SELECT Id FROM Autores WHERE Nome='" + nomeAutor + "'")
-        linha = cursor.fetchone()
-        if not linha:
-            print("Autor inexistente")
-        else:
-            idAutor = linha[0]
-
-            try:
-                cursor.execute(
-                    "INSERT INTO Livros (Codigo,Nome,Preco) VALUES (seqLivros.nextval,'" + nomeLivro + "'," + str(
-                        precoLivro) + ")")
-                conexao.commit()
-            except cx_Oracle.DatabaseError:
-                lblmsg["text"] = 'Livro repetido'
-            else:
-                cursor.execute("SELECT Codigo FROM Livros WHERE Nome='" + nomeLivro + "'")
-                linha = cursor.fetchone()
-                CodigoLivro = linha[0]
-
-                cursor.execute(
-                    "INSERT INTO Autorias (Id,Codigo) VALUES (" + str(idAutor) + "," + str(CodigoLivro) + ")")
-                conexao.commit()
-                lblmsg["text"] = 'Livro cadastrado com sucesso'
-
-
-# OPCAO 5
-def removaLivro(conexao):
-    cursor = conexao.cursor()
-    nome = txtNomeLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
-
-    cursor.execute("SELECT Codigo FROM Livros WHERE Nome='" + nome + "'")
-    linha = cursor.fetchone()
-
-    if not linha:
-        lblmsg["text"] = 'Livro inexistente'
-    else:
-        CodigoLivro = linha[0]
-
-        cursor.execute("SELECT Id FROM Autorias WHERE Codigo=" + str(CodigoLivro))
-        linha = cursor.fetchone()
-        idAutor = linha[0]
-
-        cursor.execute("DELETE FROM Autorias WHERE Id=" + str(idAutor))
-        cursor.execute("DELETE FROM Livros   WHERE Codigo=" + str(CodigoLivro))
-        conexao.commit()
-        lblmsg["text"] = 'Livro removido com sucesso'
-
-    txtNomeLivro.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNomeAutor
-
-
-# OPCAO 6
-# def listeTodosLivros(conexao):
-
-# OPCAO 7
-# def liste_livros_ate_preco(conexao):
-
-# OPCAO 8
-# def liste_livros_faixa_preco(conexao):
-
-# OPCAO 9
-# def liste_livros_acima_preco(conexao):
-
-
 
 def programa():
     servidor = 'localhost/xe'
@@ -230,7 +169,7 @@ def programa():
     txtIdAutor.pack(side=LEFT)
 
     btnBuscar = Button(painelDeBusca, text="Buscar", font=fonte, width=10)
-    #btnBuscar["command"] = buscarUsuario
+    btnBuscar["command"] = buscarAutor
     btnBuscar.pack(side=RIGHT)
 
     # ---
@@ -259,12 +198,12 @@ def programa():
     bntInsert["command"] = cadastreAutor
     bntInsert.pack(side=LEFT)
 
-    bntAlterar = Button(painelDeBotoes, text="Alterar", font=fonte, width=12)
-    #bntAlterar["command"] = alterarUsuario
-    bntAlterar.pack(side=LEFT)
+    '''bntAlterar = Button(painelDeBotoes, text="Alterar", font=fonte, width=12)
+    #bntAlterar["command"] = alterar
+    bntAlterar.pack(side=LEFT)'''
 
     bntExcluir = Button(painelDeBotoes, text="Excluir", font=fonte, width=12)
-    #bntExcluir["command"] = excluirUsuario
+    bntExcluir["command"] = removaAutor
     bntExcluir.pack(side=LEFT)
 
     # ---
