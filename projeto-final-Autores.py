@@ -1,10 +1,8 @@
-'''import os
-
+import os
 os.chdir("C:")
 os.chdir("C:\\Users\\Shinjo-PC\\Documents\\Downloads\\instantclient-basic-windows.x64-19.11.0.0.0dbru\\instantclient_19_11")
-
 # coding: utf-8
-import cx_Oracle'''
+import cx_Oracle
 
 from tkinter import *
 
@@ -57,7 +55,7 @@ def removaAutor(conexao):
     if not linha:
         lblmsg["text"] = 'Autor inexistente'
     else:
-        cursor.execute("DELETE FROM Autores WHERE Id = idAutor")
+        cursor.execute(f"DELETE FROM Autores WHERE Id = {idAutor}")
         conexao.commit()
         lblmsg["text"] = 'Autor removido com sucesso'
 
@@ -74,10 +72,10 @@ def programa():
     senha = 'aluno'
 
     try:
-        global conexao = cx_Oracle.connect(dsn=servidor, user=usuario, password=senha)
+        conexao = cx_Oracle.connect(dsn=servidor, user=usuario, password=senha)
         cursor = conexao.cursor()
     except cx_Oracle.DatabaseError:
-        lblmsg["text"] = "Erro de conexão com o BD"
+        #lblmsg["text"] = "Erro de conexão com o BD"
         return
     '''
     try:
@@ -163,7 +161,8 @@ def programa():
     lblIdAutor = Label(painelDeBusca, text="Identificacao: ", font=fonte, width=10)
     lblIdAutor.pack(side=LEFT)
 
-    global txtIdAutor = Entry(painelDeBusca)
+    global txtIdAutor
+    txtIdAutor = Entry(painelDeBusca)
     txtIdAutor["width"] = 10
     txtIdAutor["font"] = fonte
     txtIdAutor.pack(side=LEFT)
@@ -182,7 +181,8 @@ def programa():
     lblnome = Label(painelDeNome, text="Nome:", font=fonte, width=10)
     lblnome.pack(side=LEFT)
 
-    global txtNomeAutor = Entry(painelDeNome)
+    global txtNomeAutor
+    txtNomeAutor= Entry(painelDeNome)
     txtNomeAutor["width"] = 25
     txtNomeAutor["font"] = fonte
     txtNomeAutor.pack(side=LEFT)
@@ -202,7 +202,7 @@ def programa():
     #bntAlterar["command"] = alterar
     bntAlterar.pack(side=LEFT)'''
 
-    global bntExcluir = Button(painelDeBotoes, text="Excluir", font=fonte, width=12)
+    bntExcluir = Button(painelDeBotoes, text="Excluir", font=fonte, width=12)
     bntExcluir["command"] = lambda: removaAutor(conexao)
     bntExcluir.pack(side=LEFT)
 
@@ -212,7 +212,8 @@ def programa():
     painelDeMensagens["pady"] = 15
     painelDeMensagens.pack()
 
-    global lblmsg = Label(painelDeMensagens, text="Mensagem: ")
+    global lblmsg
+    lblmsg = Label(painelDeMensagens, text="Mensagem: ")
     lblmsg["font"] = ("Verdana", "9", "italic")
     lblmsg.pack()
 
