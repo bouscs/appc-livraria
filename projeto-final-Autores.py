@@ -1,27 +1,32 @@
 import os
+
 os.chdir("C:")
 os.chdir("C:\\Users\\Shinjo-PC\\Documents\\Downloads\\instantclient-basic-windows.x64-19.11.0.0.0dbru\\instantclient_19_11")
 # coding: utf-8
 import cx_Oracle
 
+import time
 from tkinter import *
+
 
 # OPCAO 0
 def buscarAutor(conexao):
     idAutor = txtIdAutor.get()
 
     cursor = conexao.cursor()
-    nomeAutor = cursor.execute(f"SELECT Nome FROM Autores WHERE Id = {idAutor}")
+    cursor.execute(f"SELECT Nome FROM Autores WHERE Id = {idAutor}")
+    nomeAutor = cursor.fetchone()
     conexao.commit()
 
     if not nomeAutor:
         lblmsg["text"] = 'Não foi possivel encontrar o autor'
     else:
         lblmsg["text"] = 'Autor encontrado com sucesso'
-        txtNomeAutor.insert(INSERT, nomeAutor)
+        txtNomeAutor.insert(END, f"{nomeAutor}")
 
-    txtNomeAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
-    txtIdAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtIdAutor
+    #txtIdAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtIdAutor
+    #txtNomeAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
+
 
 # OPCAO 1
 def cadastreAutor(conexao):
@@ -39,8 +44,8 @@ def cadastreAutor(conexao):
     except cx_Oracle.DatabaseError:
         lblmsg["text"] = 'Não foi possivel cadastrar o autor'
 
-    txtNomeAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
     txtIdAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtIdAutor
+    txtNomeAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
 
 
 # OPCAO 2
@@ -64,7 +69,24 @@ def removaAutor(conexao):
 
 
 # OPCAO 3
-# def listeAutor(conexao):
+def listeAutor(conexao):
+    cursor = conexao.cursor()
+    cursor.execute("SELECT Autores.Id, Autores.Nome FROM Autores ORDER BY Id")
+
+    linha = cursor.fetchone()
+    if not linha:
+        lblmsg["text"] = "Não há Autores cadastrados"
+        return
+    else:
+        while linha:
+            assert isinstance(linha, object)
+            lblmsg["text"] = "Autores listados com sucesso"
+            listBox.insert(END, f"{linha[0]}   {linha[1]}\n")
+            linha = cursor.fetchone()
+
+
+
+
 
 def programa():
     servidor = 'localhost/xe'
@@ -75,7 +97,7 @@ def programa():
         conexao = cx_Oracle.connect(dsn=servidor, user=usuario, password=senha)
         cursor = conexao.cursor()
     except cx_Oracle.DatabaseError:
-        #lblmsg["text"] = "Erro de conexão com o BD"
+        # lblmsg["text"] = "Erro de conexão com o BD"
         return
     '''
     try:
@@ -123,17 +145,18 @@ def programa():
         pass  # ignora, pois a tabela já existe
 
     try:
-        cursor.execute("CREATE TABLE Livros (Codigo NUMBER(5) PRIMARY KEY, Nome NVARCHAR2(50) UNIQUE NOT NULL, Preco NUMBER(5,2) NOT NULL)")
+        cursor.execute(
+            "CREATE TABLE Livros (Codigo NUMBER(5) PRIMARY KEY, Nome NVARCHAR2(50) UNIQUE NOT NULL, Preco NUMBER(5,2) NOT NULL)")
         conexao.commit()
     except cx_Oracle.DatabaseError:
         pass  # ignora, pois a tabela já existe
 
     try:
-        cursor.execute("CREATE TABLE Autorias (Id NUMBER(3), Codigo NUMBER(5), FOREIGN KEY (Id) REFERENCES Autores(Id), FOREIGN KEY (Codigo) REFERENCES Livros(Codigo))")
+        cursor.execute(
+            "CREATE TABLE Autorias (Id NUMBER(3), Codigo NUMBER(5), FOREIGN KEY (Id) REFERENCES Autores(Id), FOREIGN KEY (Codigo) REFERENCES Livros(Codigo))")
         conexao.commit()
     except cx_Oracle.DatabaseError:
         pass  # ignora, pois a tabela já existe
-
 
     janela = Tk()
 
@@ -154,11 +177,11 @@ def programa():
     # ---
 
     painelDeBusca = Frame(janela)
-    painelDeBusca["padx"] = 20
+    painelDeBusca["padx"] = 30
     painelDeBusca["pady"] = 5
     painelDeBusca.pack()
 
-    lblIdAutor = Label(painelDeBusca, text="Identificacao: ", font=fonte, width=10)
+    lblIdAutor = Label(painelDeBusca, text="Identificacao: ", font=fonte, width=12)
     lblIdAutor.pack(side=LEFT)
 
     global txtIdAutor
@@ -182,7 +205,7 @@ def programa():
     lblnome.pack(side=LEFT)
 
     global txtNomeAutor
-    txtNomeAutor= Entry(painelDeNome)
+    txtNomeAutor = Entry(painelDeNome)
     txtNomeAutor["width"] = 25
     txtNomeAutor["font"] = fonte
     txtNomeAutor.pack(side=LEFT)
@@ -206,6 +229,10 @@ def programa():
     bntExcluir["command"] = lambda: removaAutor(conexao)
     bntExcluir.pack(side=LEFT)
 
+    bntListar = Button(painelDeBotoes, text="Listar", font=fonte, width=12)
+    bntListar["command"] = lambda: listeAutor(conexao)
+    bntListar.pack(side=LEFT)
+
     # ---
 
     painelDeMensagens = Frame(janela)
@@ -218,6 +245,15 @@ def programa():
     lblmsg.pack()
 
     # ---
+
+    painelDeLista = Frame(janela)
+    painelDeLista["pady"] = 15
+    painelDeLista.pack()
+
+    global listBox
+    listBox=Listbox(painelDeLista)
+    listBox["font"] = ("Verdana", "9", "italic")
+    listBox.pack()
 
     janela.mainloop()
 
