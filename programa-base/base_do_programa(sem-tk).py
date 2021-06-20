@@ -111,8 +111,7 @@ def removaLivro(conexao):
 #OPCAO 6
 def listeTodosLivros(conexao):
     cursor = conexao.cursor()
-    cursor.execute(
-        "SELECT Livros.Nome, Autores.Nome, Livros.Preco FROM Livros, Autorias, Autores WHERE Livros.Codigo=Autorias.Codigo AND Autorias.Id=Autores.Id")
+    cursor.execute("SELECT Livros.Nome, Autores.Nome, Livros.Preco FROM Livros, Autorias, Autores WHERE Livros.Codigo=Autorias.Codigo AND Autorias.Id=Autores.Id")
 
     linha = cursor.fetchone()
     if not linha:

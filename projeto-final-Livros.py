@@ -2,6 +2,7 @@ from tkinter import *
 
 
 # OPCAO 4
+'''
 def cadastreLivro(conexao):
     cursor = conexao.cursor()
     nomeLivro = txtNomeLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
@@ -75,6 +76,7 @@ def removaLivro(conexao):
 
 # OPCAO 9
 # def liste_livros_acima_preco(conexao):
+'''
 
 def programa():
     janela = Tk()
@@ -83,139 +85,236 @@ def programa():
 
     fonte = ("Verdana", "8")
 
-    # ---
+    # --- painel orientação
 
     painelDeOrientacao = Frame(janela)
     painelDeOrientacao["pady"] = 10
     painelDeOrientacao.pack()
 
-    titulo = Label(painelDeOrientacao, text="Informe os dados :")
+    titulo = Label(painelDeOrientacao, text="Informe os dados do livro:")
     titulo["font"] = ("Calibri", "9", "bold")
     titulo.pack()
 
-    # ---
+    # --- painel de busca
 
     painelDeBusca = Frame(janela)
     painelDeBusca["padx"] = 20
     painelDeBusca["pady"] = 5
     painelDeBusca.pack()
 
-    lblIdUsuario = Label(painelDeBusca, text="Identificacao:", font=fonte, width=10)
-    lblIdUsuario.pack(side=LEFT)
+    lblCodLivro = Label(painelDeBusca, text="Código:", font=fonte, width=10)
+    lblCodLivro.pack(side=LEFT)
 
-    txtIdUsuario = Entry(painelDeBusca)
-    txtIdUsuario["width"] = 10
-    txtIdUsuario["font"] = fonte
-    txtIdUsuario.pack(side=LEFT)
+    global txtCodigoLivro
+    txtCodigoLivro = Entry(painelDeBusca)
+    txtCodigoLivro["width"] = 10
+    txtCodigoLivro["font"] = fonte
+    txtCodigoLivro.pack(side=LEFT)
 
     btnBuscar = Button(painelDeBusca, text="Buscar", font=fonte, width=10)
-    #btnBuscar["command"] = buscarUsuario
+    #btnBuscar["command"] = lambda: buscarLivro(conexao)
     btnBuscar.pack(side=RIGHT)
 
-    # ---
+    # --- painel nome livro
 
     painelDeNome = Frame(janela)
     painelDeNome["padx"] = 20
     painelDeNome["pady"] = 5
     painelDeNome.pack()
 
-    lblnome = Label(painelDeNome, text="Nome:", font=fonte, width=10)
+    lblnome = Label(painelDeNome, text="Nome Livro:", font=fonte, width=10)
     lblnome.pack(side=LEFT)
 
-    txtNome = Entry(painelDeNome)
-    txtNome["width"] = 25
-    txtNome["font"] = fonte
-    txtNome.pack(side=LEFT)
+    global txtNomeLivro
+    txtNomeLivro = Entry(painelDeNome)
+    txtNomeLivro["width"] = 25
+    txtNomeLivro["font"] = fonte
+    txtNomeLivro.pack(side=LEFT)
 
+    # --- Painel preco Livro
+
+    painelPreco = Frame(janela)
+    painelPreco["padx"] = 20
+    painelPreco["pady"] = 5
+    painelPreco.pack()
+
+    lblPreco = Label(painelPreco, text="Preço: R$", font=fonte, width=10)
+    lblPreco.pack(side=LEFT)
+
+    global txtPrecoLivro
+    txtPrecoLivro = Entry(painelPreco)
+    txtPrecoLivro["width"] = 25
+    txtPrecoLivro["font"] = fonte
+    txtPrecoLivro.pack(side=LEFT)
     # ---
 
-    painelDeTelefone = Frame(janela)
-    painelDeTelefone["padx"] = 20
-    painelDeTelefone["pady"] = 5
-    painelDeTelefone.pack()
+    painelNomeAutor = Frame(janela)
+    painelNomeAutor["padx"] = 20
+    painelNomeAutor["pady"] = 5
+    painelNomeAutor.pack()
 
-    lbltelefone = Label(painelDeTelefone, text="Telefone:", font=fonte, width=10)
-    lbltelefone.pack(side=LEFT)
+    lblNomeAutor = Label(painelNomeAutor, text="Nome Autor", font=fonte, width=10)
+    lblNomeAutor.pack(side=LEFT)
 
-    txtTelefone = Entry(painelDeTelefone)
-    txtTelefone["width"] = 25
-    txtTelefone["font"] = fonte
-    txtTelefone.pack(side=LEFT)
+    global txtNomeAutor
+    txtNomeAutor = Entry(painelNomeAutor)
+    txtNomeAutor["width"] = 25
+    txtNomeAutor["font"] = fonte
+    txtNomeAutor.pack(side=LEFT)
 
-    # ---
 
-    painelDeEmail = Frame(janela)
-    painelDeEmail["padx"] = 20
-    painelDeEmail["pady"] = 5
-    painelDeEmail.pack()
+    # --- Mensagem label
 
-    lblemail = Label(painelDeEmail, text="E-mail:", font=fonte, width=10)
-    lblemail.pack(side=LEFT)
+    painelDeMensagens1 = Frame(janela)
+    painelDeMensagens1["pady"] = 10
+    painelDeMensagens1.pack()
 
-    txtEmail = Entry(painelDeEmail)
-    txtEmail["width"] = 25
-    txtEmail["font"] = fonte
-    txtEmail.pack(side=LEFT)
+    global lblmsg1
+    lblmsg1 = Label(painelDeMensagens1, text="Mensagem: ")
+    lblmsg1["font"] = ("Verdana", "8", "italic")
+    lblmsg1.pack()
 
-    # ---
-
-    painelDeUsuario = Frame(janela)
-    painelDeUsuario["padx"] = 20
-    painelDeUsuario["pady"] = 5
-    painelDeUsuario.pack()
-
-    lblusuario = Label(painelDeUsuario, text="Usuário:", font=fonte, width=10)
-    lblusuario.pack(side=LEFT)
-
-    txtUsuario = Entry(painelDeUsuario)
-    txtUsuario["width"] = 25
-    txtUsuario["font"] = fonte
-    txtUsuario.pack(side=LEFT)
-
-    # ---
-
-    painelDeSenha = Frame(janela)
-    painelDeSenha["padx"] = 20
-    painelDeSenha["pady"] = 5
-    painelDeSenha.pack()
-
-    lblsenha = Label(painelDeSenha, text="Senha:", font=fonte, width=10)
-    lblsenha.pack(side=LEFT)
-
-    txtSenha = Entry(painelDeSenha)
-    txtSenha["width"] = 25
-    txtSenha["show"] = "*"
-    txtSenha["font"] = fonte
-    txtSenha.pack(side=LEFT)
-
-    # ---
+    # --- Painel dos botoes
 
     painelDeBotoes = Frame(janela)
     painelDeBotoes["padx"] = 20
     painelDeBotoes["pady"] = 10
     painelDeBotoes.pack()
 
-    bntInsert = Button(painelDeBotoes, text="Inserir", font=fonte, width=12)
-    #bntInsert["command"] = inserirUsuario
+    bntInsert = Button(painelDeBotoes, text="Cadastre", font=fonte, width=12)
+    #bntInsert["command"] = lambda: cadastreLivro(conexao)
     bntInsert.pack(side=LEFT)
 
-    bntAlterar = Button(painelDeBotoes, text="Alterar", font=fonte, width=12)
-    #bntAlterar["command"] = alterarUsuario
-    bntAlterar.pack(side=LEFT)
-
-    bntExcluir = Button(painelDeBotoes, text="Excluir", font=fonte, width=12)
-    #bntExcluir["command"] = excluirUsuario
+    bntExcluir = Button(painelDeBotoes, text="Remover", font=fonte, width=12)
+    #bntExcluir["command"] = lambda: removaLivro(conexao)
     bntExcluir.pack(side=LEFT)
+
+
+
+
+    #Listagens options
+
+    # --- painel listagem
+
+    painelDeListar = Frame(janela)
+    painelDeListar["pady"] = 10
+    painelDeListar.pack()
+
+    titulo = Label(painelDeListar, text="Opções de listagem:")
+    titulo["font"] = ("Calibri", "9", "bold")
+    titulo.pack()
+
+    # --- painel listar 1: f"listar livros até R${X}"
+
+    painelListar1 = Frame(janela)
+    painelListar1["padx"] = 1
+    painelListar1["pady"] = 1
+    painelListar1.pack()
+
+    lblListar1 = Label(painelListar1, text="Listar livros até quantos R$?", font=fonte, width=40)
+    lblListar1.pack(side=LEFT)
+
+    global txtListar1
+    txtListar1 = Entry(painelListar1)
+    txtListar1["width"] = 5
+    txtListar1["font"] = fonte
+    txtListar1.pack(side=LEFT)
+
+    bntListar1 = Button(painelListar1, text="Listar", font=fonte, width=6)
+    #bntListar["command"] = lambda: listeTodosLivros(conexao)
+    bntListar1.pack(side=LEFT)
+
+    # --- painel listar 2: f"listar livros acima de quantos R${X}"
+
+    painelListar2 = Frame(janela)
+    painelListar2["padx"] = 1
+    painelListar2["pady"] = 1
+    painelListar2.pack()
+
+    lblListar2 = Label(painelListar2, text="Listar livros acima de quantos R$?", font=fonte, width=40)
+    lblListar2.pack(side=LEFT)
+
+    global txtListar2
+    txtListar2 = Entry(painelListar2)
+    txtListar2["width"] = 5
+    txtListar2["font"] = fonte
+    txtListar2.pack(side=LEFT)
+
+    bntListar2 = Button(painelListar2, text="Listar", font=fonte, width=6)
+    #bntListar["command"] = lambda: listeTodosLivros(conexao)
+    bntListar2.pack(side=LEFT)
+
+    # --- painel listar 3: f"listar livros numa faixa de preco"
+
+    painelListar3 = Frame(janela)
+    painelListar3["padx"] = 5
+    painelListar3["pady"] = 10
+    painelListar3.pack()
+
+    lblListar3 = Label(painelListar3, text="Listar livros na faixa de quantos R$?", font=fonte, width=35)
+    lblListar3.pack(side=LEFT)
+
+    painelListar3Inputs = Frame(janela)
+    painelListar3Inputs["padx"] = 5
+    painelListar3Inputs["pady"] = 5
+    painelListar3Inputs.pack()
+
+    lblListar3Min = Label(painelListar3Inputs, text="Preco mínimo: R$", font=fonte, width=17)
+    lblListar3Min.pack(side=LEFT)
+
+    global txtListar3Min
+    txtListar3Min = Entry(painelListar3Inputs)
+    txtListar3Min["width"] = 5
+    txtListar3Min["font"] = fonte
+    txtListar3Min.pack(side=LEFT)
+
+
+    lblListar3Max = Label(painelListar3Inputs, text="Preco máximo: R$", font=fonte, width=17)
+    lblListar3Max.pack(side=LEFT)
+
+    global txtListar3Max
+    txtListar3Max = Entry(painelListar3Inputs)
+    txtListar3Max["width"] = 5
+    txtListar3Max["font"] = fonte
+    txtListar3Max.pack(side=LEFT)
+
+    bntListar3 = Button(painelListar3Inputs, text="Listar", font=fonte, width=6)
+    #bntListar["command"] = lambda: listeTodosLivros(conexao)
+    bntListar3.pack(side=LEFT)
 
     # ---
 
-    painelDeMensagens = Frame(janela)
-    painelDeMensagens["pady"] = 15
-    painelDeMensagens.pack()
+    painelDeMensagens2 = Frame(janela)
+    painelDeMensagens2["pady"] = 10
+    painelDeMensagens2.pack()
 
-    lblmsg = Label(painelDeMensagens, text="Mensagem: ")
-    lblmsg["font"] = ("Verdana", "9", "italic")
-    lblmsg.pack()
+    global lblmsg2
+    lblmsg2 = Label(painelDeMensagens2, text="Mensagem: ")
+    lblmsg2["font"] = ("Verdana", "8", "italic")
+    lblmsg2.pack()
+
+    # ---
+
+    painelDeLista = Frame(janela)
+    painelDeLista["padx"] = 50
+    painelDeLista["pady"] = 15
+    painelDeLista.pack()
+
+    global listBox
+    listBox=Listbox(painelDeLista)
+    listBox["font"] = ("Verdana", "9", "italic")
+    listBox.pack()
+
+    # --- Painel dos botões
+
+    painelDeBotoes = Frame(janela)
+    painelDeBotoes["padx"] = 20
+    painelDeBotoes["pady"] = 10
+    painelDeBotoes.pack()
+
+    bntListar = Button(painelDeBotoes, text="Listar Todos", font=fonte, width=24)
+    #bntListar["command"] = lambda: listeTodosLivros(conexao)
+    bntListar.pack(side=LEFT)
 
     # ---
 
