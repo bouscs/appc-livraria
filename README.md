@@ -23,7 +23,7 @@ Para iniciar o programa é necessário um arquivo `.env` contendo as variáveis 
 
 - [X] removaLivro(conexao)
 
-- [ ] listeTodosLivros(conexao)
+- [x] listeTodosLivros(conexao)
 
 - [ ] liste_livros_ate_preco(conexao)
 
