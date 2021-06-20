@@ -1,84 +1,196 @@
+import os
+
+os.chdir("C:")
+os.chdir("C:\\Users\\Shinjo-PC\\Documents\\Downloads\\instantclient-basic-windows.x64-19.11.0.0.0dbru\\instantclient_19_11")
+# coding: utf-8
+import cx_Oracle
+
 from tkinter import *
 
+# OPCAO 0
+def buscarLivro(conexao):
+    codigoLivro = txtCodigoLivro.get()
 
-# OPCAO 4
-'''
+    cursor = conexao.cursor()
+    cursor.execute(f"SELECT Livros.Nome, Livros.Preco, Autores.Nome FROM Livros, Autorias, Autores WHERE Livros.Codigo = {codigoLivro} AND Autorias.Codigo = {codigoLivro} AND Autorias.Id=Autores.Id")
+    dadosLivro = cursor.fetchone()
+    conexao.commit()
+
+    if not dadosLivro:
+        lblmsg1["text"] = 'Não foi possivel encontrar o Livro'
+    else:
+        lblmsg1["text"] = 'Livro encontrado com sucesso'
+
+        txtNomeLivro.insert(END, f"{dadosLivro[0]}")
+        txtPrecoLivro.insert(END, f"{dadosLivro[1]}")
+        txtNomeAutor.insert(END, f"{dadosLivro[2]}")
+
+
+# OPCAO 1 - 4
 def cadastreLivro(conexao):
     cursor = conexao.cursor()
     nomeLivro = txtNomeLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
-
     try:
         precoLivro = txtPrecoLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
     except ValueError:
-        lblmsg["text"] = 'Preço inválido'
-
+        lblmsg1["text"] = 'Preço inválido'
     else:
         nomeAutor = txtNomeAutor.get()  # recupera o que foi digitado na caixa de texto txtNomeAutor
-
-        cursor.execute("SELECT Id FROM Autores WHERE Nome='" + nomeAutor + "'")
+        cursor.execute(f"SELECT Id FROM Autores WHERE Nome='{nomeAutor}'")
         linha = cursor.fetchone()
         if not linha:
             print("Autor inexistente")
         else:
             idAutor = linha[0]
-
             try:
-                cursor.execute(
-                    "INSERT INTO Livros (Codigo,Nome,Preco) VALUES (seqLivros.nextval,'" + nomeLivro + "'," + str(
-                        precoLivro) + ")")
+                cursor.execute(f"INSERT INTO Livros (Codigo,Nome,Preco) VALUES (seqLivros.nextval,'{nomeLivro}',{precoLivro})")
                 conexao.commit()
             except cx_Oracle.DatabaseError:
-                lblmsg["text"] = 'Livro repetido'
+                lblmsg1["text"] = 'Livro repetido'
             else:
-                cursor.execute("SELECT Codigo FROM Livros WHERE Nome='" + nomeLivro + "'")
+                cursor.execute(f"SELECT Codigo FROM Livros WHERE Nome='{nomeLivro}'")
                 linha = cursor.fetchone()
-                CodigoLivro = linha[0]
-
-                cursor.execute(
-                    "INSERT INTO Autorias (Id,Codigo) VALUES (" + str(idAutor) + "," + str(CodigoLivro) + ")")
+                codigoLivro = linha[0]
+                cursor.execute(f"INSERT INTO Autorias (Id,Codigo) VALUES ({idAutor}, {codigoLivro})")
                 conexao.commit()
-                lblmsg["text"] = 'Livro cadastrado com sucesso'
+                lblmsg1["text"] = 'Livro cadastrado com sucesso'
 
 
-# OPCAO 5
+# OPCAO 2 - 5
 def removaLivro(conexao):
     cursor = conexao.cursor()
-    nome = txtNomeLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
-
-    cursor.execute("SELECT Codigo FROM Livros WHERE Nome='" + nome + "'")
+    nomeLivro = txtNomeLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
+    cursor.execute(f"SELECT Codigo FROM Livros WHERE Nome='{nomeLivro}'")
     linha = cursor.fetchone()
 
     if not linha:
-        lblmsg["text"] = 'Livro inexistente'
+        lblmsg1["text"] = 'Livro inexistente'
     else:
-        CodigoLivro = linha[0]
-
-        cursor.execute("SELECT Id FROM Autorias WHERE Codigo=" + str(CodigoLivro))
+        codigoLivro = linha[0]
+        cursor.execute(f"SELECT Id FROM Autorias WHERE Codigo={codigoLivro}")
         linha = cursor.fetchone()
         idAutor = linha[0]
-
-        cursor.execute("DELETE FROM Autorias WHERE Id=" + str(idAutor))
-        cursor.execute("DELETE FROM Livros   WHERE Codigo=" + str(CodigoLivro))
+        cursor.execute(f"DELETE FROM Autorias WHERE Id= {idAutor}")
+        cursor.execute(f"DELETE FROM Livros   WHERE Codigo= {codigoLivro}")
         conexao.commit()
-        lblmsg["text"] = 'Livro removido com sucesso'
+        lblmsg1["text"] = 'Livro removido com sucesso'
+        #txtNomeLivro.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNomeAutor
 
-    txtNomeLivro.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNomeAutor
+# - opcoes de listagem
+
+# OPCAO 4 - 6
+def listeTodosLivros(conexao):
+    cursor = conexao.cursor()
+    cursor.execute("SELECT Livros.Codigo, Livros.Nome, Autores.Nome, Livros.Preco FROM Livros, Autorias, Autores WHERE Livros.Codigo=Autorias.Codigo AND Autorias.Id=Autores.Id")
+
+    linha = cursor.fetchone()
+    if not linha:
+        lblmsg2["text"] = "Não há Livros cadastrados"
+        return
+    else:
+        while linha:
+            assert isinstance(linha, object)
+            lblmsg2["text"] = "Livros listados com sucesso"
+            listBox.insert(END, f"Codigo: {linha[0]}\n")
+            listBox.insert(END, f"Livro: {linha[1]}\n")
+            listBox.insert(END, f"Autor: {linha[2]}\n")
+            listBox.insert(END, f"Preço: {linha[3]}\n")
+            listBox.insert(END, f"\n")
+            linha = cursor.fetchone()
+
+'''#OPCAO 7
+def liste_livros_ate_preco(conexao):
+    cursor = conexao.cursor()
+    precoLivro = txtPrecoLivro.get()
+
+    try:
+        precoLivro = float(input("Listar livros ate quantos R$? "))
+    except ValueError:
+        print("Preço inválido")'''
 
 
-# OPCAO 6
-# def listeTodosLivros(conexao):
-
-# OPCAO 7
-# def liste_livros_ate_preco(conexao):
-
+'''
 # OPCAO 8
 # def liste_livros_faixa_preco(conexao):
-
 # OPCAO 9
 # def liste_livros_acima_preco(conexao):
 '''
 
 def programa():
+
+    servidor = 'localhost/xe'
+    usuario = 'SYSTEM'
+    senha = 'aluno'
+
+    try:
+        conexao = cx_Oracle.connect(dsn=servidor, user=usuario, password=senha)
+        cursor = conexao.cursor()
+    except cx_Oracle.DatabaseError:
+        # lblmsg["text"] = "Erro de conexão com o BD"
+        return
+    '''
+    try:
+        cursor.execute("DROP TABLE Autorias")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass # ignora, pois a tabela nao existe
+    try:
+        cursor.execute("DROP SEQUENCE seqAutores")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass # ignora, pois a sequencia nao existe
+    try:
+        cursor.execute("DROP TABLE Autores")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass # ignora, pois a tabela nao existe
+    try:
+        cursor.execute("DROP SEQUENCE seqLivros")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass # ignora, pois a sequencia nao existe
+    try:
+        cursor.execute("DROP TABLE Livros")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass # ignora, pois a tabela nao existe
+    '''
+    try:
+        cursor.execute("CREATE SEQUENCE seqAutores START WITH 1 INCREMENT BY 1 MINVALUE 1 MAXVALUE 999 NOCACHE CYCLE")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass  # ignora, pois a sequência já existe
+
+    try:
+        cursor.execute("CREATE TABLE Autores (Id NUMBER(3) PRIMARY KEY, Nome NVARCHAR2(50) UNIQUE NOT NULL)")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass  # ignora, pois a tabela já existe
+
+    try:
+        cursor.execute("CREATE SEQUENCE seqLivros START WITH 1 INCREMENT BY 1 MAXVALUE 999 NOCACHE CYCLE")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass  # ignora, pois a tabela já existe
+
+    try:
+        cursor.execute(
+            "CREATE TABLE Livros (Codigo NUMBER(5) PRIMARY KEY, Nome NVARCHAR2(50) UNIQUE NOT NULL, Preco NUMBER(5,2) NOT NULL)")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass  # ignora, pois a tabela já existe
+
+    try:
+        cursor.execute(
+            "CREATE TABLE Autorias (Id NUMBER(3), Codigo NUMBER(5), FOREIGN KEY (Id) REFERENCES Autores(Id), FOREIGN KEY (Codigo) REFERENCES Livros(Codigo))")
+        conexao.commit()
+    except cx_Oracle.DatabaseError:
+        pass  # ignora, pois a tabela já existe
+
+
+
+
+
     janela = Tk()
 
     # ---
@@ -112,7 +224,7 @@ def programa():
     txtCodigoLivro.pack(side=LEFT)
 
     btnBuscar = Button(painelDeBusca, text="Buscar", font=fonte, width=10)
-    #btnBuscar["command"] = lambda: buscarLivro(conexao)
+    btnBuscar["command"] = lambda: buscarLivro(conexao)
     btnBuscar.pack(side=RIGHT)
 
     # --- painel nome livro
@@ -182,11 +294,11 @@ def programa():
     painelDeBotoes.pack()
 
     bntInsert = Button(painelDeBotoes, text="Cadastre", font=fonte, width=12)
-    #bntInsert["command"] = lambda: cadastreLivro(conexao)
+    bntInsert["command"] = lambda: cadastreLivro(conexao)
     bntInsert.pack(side=LEFT)
 
     bntExcluir = Button(painelDeBotoes, text="Remover", font=fonte, width=12)
-    #bntExcluir["command"] = lambda: removaLivro(conexao)
+    bntExcluir["command"] = lambda: removaLivro(conexao)
     bntExcluir.pack(side=LEFT)
 
 
@@ -296,8 +408,8 @@ def programa():
     # ---
 
     painelDeLista = Frame(janela)
-    painelDeLista["padx"] = 50
-    painelDeLista["pady"] = 15
+    painelDeLista["padx"] = 100
+    painelDeLista["pady"] = 10
     painelDeLista.pack()
 
     global listBox
@@ -313,7 +425,7 @@ def programa():
     painelDeBotoes.pack()
 
     bntListar = Button(painelDeBotoes, text="Listar Todos", font=fonte, width=24)
-    #bntListar["command"] = lambda: listeTodosLivros(conexao)
+    bntListar["command"] = lambda: listeTodosLivros(conexao)
     bntListar.pack(side=LEFT)
 
     # ---
