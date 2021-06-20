@@ -17,9 +17,9 @@ Para iniciar o programa é necessário um arquivo `.env` contendo as variáveis 
  
 - [X] listeAutor(conexao)
 
-- [ ] cadastreLivro(conexao)
+- [X] cadastreLivro(conexao)
 
-- [ ] removaLivro(conexao)
+- [X] removaLivro(conexao)
 
 - [ ] listeTodosLivros(conexao)
 
