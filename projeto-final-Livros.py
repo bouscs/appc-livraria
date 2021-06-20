@@ -78,7 +78,7 @@ def removaLivro(conexao):
 
 # - opcoes de listagem
 
-# OPCAO 4 - 6
+# OPCAO 3 - 6
 def listeTodosLivros(conexao):
     cursor = conexao.cursor()
     cursor.execute("SELECT Livros.Codigo, Livros.Nome, Autores.Nome, Livros.Preco FROM Livros, Autorias, Autores WHERE Livros.Codigo=Autorias.Codigo AND Autorias.Id=Autores.Id")
@@ -98,15 +98,33 @@ def listeTodosLivros(conexao):
             listBox.insert(END, f"\n")
             linha = cursor.fetchone()
 
-'''#OPCAO 7
+# OPCAO 4 - 7
 def liste_livros_ate_preco(conexao):
     cursor = conexao.cursor()
-    precoLivro = txtPrecoLivro.get()
 
     try:
-        precoLivro = float(input("Listar livros ate quantos R$? "))
+        precoLivro = txtListar1.get()
     except ValueError:
-        print("Preço inválido")'''
+        lblmsg2["text"] = "Preço inválido"
+
+    cursor.execute(f"SELECT Livros.Preco, Livros.Codigo, Livros.Nome, Autores.Nome FROM Livros, Autorias, Autores WHERE Livros.Codigo=Autorias.Codigo AND Autorias.Id=Autores.Id AND Livros.Preco <= {precoLivro} ORDER BY Livros.Preco")
+    linha = cursor.fetchone()
+    if not linha:
+        lblmsg2["text"] = "Não há Livros cadastrados"
+        return
+    else:
+        while linha:
+            assert isinstance(linha, object)
+            lblmsg2["text"] = "Livros listados com sucesso"
+            listBox.insert(END, f"Preço: {linha[0]}\n")
+            listBox.insert(END, f"Codigo: {linha[1]}\n")
+            listBox.insert(END, f"Livro: {linha[2]}\n")
+            listBox.insert(END, f"Autor: {linha[3]}\n")
+            listBox.insert(END, f"\n")
+            linha = cursor.fetchone()
+
+
+
 
 
 '''
@@ -333,7 +351,7 @@ def programa():
     txtListar1.pack(side=LEFT)
 
     bntListar1 = Button(painelListar1, text="Listar", font=fonte, width=6)
-    #bntListar["command"] = lambda: listeTodosLivros(conexao)
+    bntListar1["command"] = lambda: liste_livros_ate_preco(conexao)
     bntListar1.pack(side=LEFT)
 
     # --- painel listar 2: f"listar livros acima de quantos R${X}"
