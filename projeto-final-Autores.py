@@ -1,7 +1,8 @@
 import os
 
 os.chdir("C:")
-os.chdir("C:\\Users\\Shinjo-PC\\Documents\\Downloads\\instantclient-basic-windows.x64-19.11.0.0.0dbru\\instantclient_19_11")
+os.chdir(
+    "C:\\Users\\Shinjo-PC\\Documents\\Downloads\\instantclient-basic-windows.x64-19.11.0.0.0dbru\\instantclient_19_11")
 # coding: utf-8
 import cx_Oracle
 
@@ -13,10 +14,16 @@ from tkinter import *
 def buscarAutor(conexao):
     idAutor = txtIdAutor.get()
 
+    '''if idAutor == False:
+        lblmsg["text"] = 'caixa IDENTIFICAÇÃO do autor vazia'
+    else:'''
+
     cursor = conexao.cursor()
     cursor.execute(f"SELECT Nome FROM Autores WHERE Id = {idAutor}")
     nomeAutor = cursor.fetchone()
     conexao.commit()
+
+
 
     if not nomeAutor:
         lblmsg["text"] = 'Não foi possivel encontrar o autor'
@@ -38,7 +45,7 @@ def cadastreAutor(conexao):
     '''
 
     try:
-        cursor.execute("INSERT INTO Autores (Id,Nome) VALUES (seqAutores.nextval,'" + nome + "')")
+        cursor.execute(f"INSERT INTO Autores (Id,Nome) VALUES (seqAutores.nextval,{nome})")
         conexao.commit()
         lblmsg["text"] = 'Autor cadastrado com sucesso'
     except cx_Oracle.DatabaseError:
@@ -68,7 +75,6 @@ def removaAutor(conexao):
     txtIdAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNomeAutor
 
 
-# OPCAO 3
 def listeAutor(conexao):
     cursor = conexao.cursor()
     cursor.execute("SELECT Autores.Id, Autores.Nome FROM Autores ORDER BY Id")
