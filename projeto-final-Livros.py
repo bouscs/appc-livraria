@@ -110,7 +110,7 @@ def liste_livros_ate_preco(conexao):
     cursor.execute(f"SELECT Livros.Preco, Livros.Codigo, Livros.Nome, Autores.Nome FROM Livros, Autorias, Autores WHERE Livros.Codigo=Autorias.Codigo AND Autorias.Id=Autores.Id AND Livros.Preco <= {precoLivro} ORDER BY Livros.Preco")
     linha = cursor.fetchone()
     if not linha:
-        lblmsg2["text"] = "Não há Livros cadastrados"
+        lblmsg2["text"] = "Não há Livros abaixo desse preço"
         return
     else:
         while linha:
@@ -123,16 +123,59 @@ def liste_livros_ate_preco(conexao):
             listBox.insert(END, f"\n")
             linha = cursor.fetchone()
 
+# OPCAO 5 - 8
+def liste_livros_acima_preco(conexao):
+    cursor = conexao.cursor()
 
+    try:
+        precoLivro = txtListar2.get()
+    except ValueError:
+        lblmsg2["text"] = "Preço inválido"
 
+    cursor.execute(f"SELECT Livros.Preco, Livros.Codigo, Livros.Nome, Autores.Nome FROM Livros, Autorias, Autores WHERE Livros.Codigo=Autorias.Codigo AND Autorias.Id=Autores.Id AND Livros.Preco >= {precoLivro} ORDER BY Livros.Preco")
+    linha = cursor.fetchone()
+    if not linha:
+        lblmsg2["text"] = "Não há livros acima desse preço"
+        return
+    else:
+        while linha:
+            assert isinstance(linha, object)
+            lblmsg2["text"] = "Livros listados com sucesso"
+            listBox.insert(END, f"Preço: {linha[0]}\n")
+            listBox.insert(END, f"Codigo: {linha[1]}\n")
+            listBox.insert(END, f"Livro: {linha[2]}\n")
+            listBox.insert(END, f"Autor: {linha[3]}\n")
+            listBox.insert(END, f"\n")
+            linha = cursor.fetchone()
 
+# OPCAO 6 - 9
+def liste_livros_faixa_preco(conexao):
+    cursor = conexao.cursor()
+    try:
+        precoMin = txtListar3Min.get()
+    except ValueError:
+        lblmsg2["text"] = "Preço inválido"
 
-'''
-# OPCAO 8
-# def liste_livros_faixa_preco(conexao):
-# OPCAO 9
-# def liste_livros_acima_preco(conexao):
-'''
+    try:
+        precoMax = txtListar3Max.get()
+    except ValueError:
+        lblmsg2["text"] = "Preço inválido"
+
+    cursor.execute(f"SELECT Livros.Preco, Livros.Codigo, Livros.Nome, Autores.Nome FROM Livros, Autorias, Autores WHERE Livros.Codigo=Autorias.Codigo AND Autorias.Id=Autores.Id AND Livros.Preco >= {precoMin} AND Livros.Preco <= {precoMax} ORDER BY Livros.Preco")
+    linha = cursor.fetchone()
+    if not linha:
+        lblmsg2["text"] = "Não há livros nessa faixa de preço"
+        return
+    else:
+        while linha:
+            assert isinstance(linha, object)
+            lblmsg2["text"] = "Livros listados com sucesso"
+            listBox.insert(END, f"Preço: {linha[0]}\n")
+            listBox.insert(END, f"Codigo: {linha[1]}\n")
+            listBox.insert(END, f"Livro: {linha[2]}\n")
+            listBox.insert(END, f"Autor: {linha[3]}\n")
+            listBox.insert(END, f"\n")
+            linha = cursor.fetchone()
 
 def programa():
 
@@ -371,7 +414,7 @@ def programa():
     txtListar2.pack(side=LEFT)
 
     bntListar2 = Button(painelListar2, text="Listar", font=fonte, width=6)
-    #bntListar["command"] = lambda: listeTodosLivros(conexao)
+    bntListar2["command"] = lambda: liste_livros_acima_preco(conexao)
     bntListar2.pack(side=LEFT)
 
     # --- painel listar 3: f"listar livros numa faixa de preco"
@@ -409,7 +452,7 @@ def programa():
     txtListar3Max.pack(side=LEFT)
 
     bntListar3 = Button(painelListar3Inputs, text="Listar", font=fonte, width=6)
-    #bntListar["command"] = lambda: listeTodosLivros(conexao)
+    bntListar3["command"] = lambda: liste_livros_faixa_preco(conexao)
     bntListar3.pack(side=LEFT)
 
     # ---
