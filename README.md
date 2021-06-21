@@ -10,24 +10,11 @@ Para iniciar o programa é necessário um arquivo `.env` contendo as variáveis 
 
 
 ## Checklist
-- [x] buscarAutor(conexao)
+- [ ] Se apresentar
 
-- [x] cadastreAutor(conexao)
+- [ ] Arquivo txt 
 
-- [x] removaAutor(conexao)
+- [ ] Mostrar o programa funcioando
  
-- [X] listeAutor(conexao)
+- [ ] Mostrar o codigo (a modelagem do tkinter / funcoes / integração BD )
 
-- [X] buscarLivro(conexao)
-
-- [X] cadastreLivro(conexao)
-
-- [X] removaLivro(conexao)
-
-- [x] listeTodosLivros(conexao)
-
-- [x] liste_livros_ate_preco(conexao)
-
-- [x] liste_livros_faixa_preco(conexao)
-
-- [x] liste_livros_acima_preco(conexao)
