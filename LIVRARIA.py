@@ -25,17 +25,11 @@ def abrirAutores():
         listBoxAutores.delete(0, END)
         txtIdAutor.delete(0, END)
         txtNomeAutor.delete(0, END)
-        txtPrecoLivro.delete(0, END)
-        txtNomeAutor.delete(0, END)
-        lblmsg1["text"] = 'Caixas de entradas limpadas com sucesso'
+        lblmsg["text"] = 'Caixas de entradas limpadas com sucesso'
 
     # OPCAO 0
     def buscarAutor(conexao):
         idAutor = txtIdAutor.get()
-
-        '''if idAutor == False:
-            lblmsg["text"] = 'caixa IDENTIFICAÇÃO do autor vazia'
-        else:'''
 
         cursor = conexao.cursor()
         cursor.execute(f"SELECT Nome FROM Autores WHERE Id = {idAutor}")
@@ -48,32 +42,23 @@ def abrirAutores():
             lblmsg["text"] = 'Autor encontrado com sucesso'
             txtNomeAutor.insert(END, f"{nomeAutor}")
 
-        # txtIdAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtIdAutor
-        # txtNomeAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
 
     # OPCAO 1
     def cadastreAutor(conexao):
         cursor = conexao.cursor()
-        nome = txtNomeAutor.get()  # recupera o que foi digitado na caixa de texto txtNomeAutor
-
-        '''if nome == False:
-            lblmsg["text"] = 'Caixa NOME DO AUTOR vazia'
-        '''
+        nome = txtNomeAutor.get()
 
         try:
-            cursor.execute(f"INSERT INTO Autores (Id,Nome) VALUES (seqAutores.nextval,{nome})")
+            cursor.execute(f"INSERT INTO Autores (Id,Nome) VALUES (seqAutores.nextval,'{nome}')")
             conexao.commit()
             lblmsg["text"] = 'Autor cadastrado com sucesso'
         except cx_Oracle.DatabaseError:
             lblmsg["text"] = 'Não foi possivel cadastrar o autor'
 
-        txtIdAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtIdAutor
-        txtNomeAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
-
     # OPCAO 2
     def removaAutor(conexao):
         cursor = conexao.cursor()
-        idAutor = txtIdAutor.get()  # recupera o que foi digitdo na caixa de texto txtIdAutor
+        idAutor = txtIdAutor.get()
 
         cursor.execute(f"SELECT * FROM Autores WHERE Id = {idAutor}")
         conexao.commit()
@@ -85,9 +70,6 @@ def abrirAutores():
             cursor.execute(f"DELETE FROM Autores WHERE Id = {idAutor}")
             conexao.commit()
             lblmsg["text"] = 'Autor removido com sucesso'
-
-        txtNomeAutor.delete(0, END)  # limpa o que estava escrito
-        txtIdAutor.delete(0, END)  # limpa o que estava escrito
 
     def listeAutor(conexao):
         cursor = conexao.cursor()
@@ -325,13 +307,13 @@ def abrirLivros():
     # OPCAO 1 - 4
     def cadastreLivro(conexao):
         cursor = conexao.cursor()
-        nomeLivro = txtNomeLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
+        nomeLivro = txtNomeLivro.get()
         try:
-            precoLivro = txtPrecoLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeLivro
+            precoLivro = txtPrecoLivro.get()
         except ValueError:
             lblmsg1["text"] = 'Preço inválido'
         else:
-            nomeAutor = txtNomeAutorLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeAutor
+            nomeAutor = txtNomeAutorLivro.get()
             cursor.execute(f"SELECT Id FROM Autores WHERE Nome='{nomeAutor}'")
             linha = cursor.fetchone()
             if not linha:
