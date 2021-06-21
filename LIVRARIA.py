@@ -21,8 +21,8 @@ def abrirAutores():
 
 
 
-    def limpar1():
-        listBox.delete(0, END)
+    def limpar():
+        listBoxAutores.delete(0, END)
         txtIdAutor.delete(0, END)
         txtNomeAutor.delete(0, END)
         txtPrecoLivro.delete(0, END)
@@ -86,8 +86,8 @@ def abrirAutores():
             conexao.commit()
             lblmsg["text"] = 'Autor removido com sucesso'
 
-        txtNomeAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNome
-        txtIdAutor.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNomeAutor
+        txtNomeAutor.delete(0, END)  # limpa o que estava escrito
+        txtIdAutor.delete(0, END)  # limpa o que estava escrito
 
     def listeAutor(conexao):
         cursor = conexao.cursor()
@@ -101,7 +101,7 @@ def abrirAutores():
             while linha:
                 assert isinstance(linha, object)
                 lblmsg["text"] = "Autores listados com sucesso"
-                listBox.insert(END, f"{linha[0]}   {linha[1]}\n")
+                listBoxAutores.insert(END, f"{linha[0]}   {linha[1]}\n")
                 linha = cursor.fetchone()
 
     def programa():
@@ -239,10 +239,6 @@ def abrirAutores():
         bntInsert["command"] = lambda: cadastreAutor(conexao)
         bntInsert.pack(side=LEFT)
 
-        '''bntAlterar = Button(painelDeBotoes, text="Alterar", font=fonte, width=12)
-        #bntAlterar["command"] = alterar
-        bntAlterar.pack(side=LEFT)'''
-
         bntExcluir = Button(painelDeBotoes, text="Excluir", font=fonte, width=12)
         bntExcluir["command"] = lambda: removaAutor(conexao)
         bntExcluir.pack(side=LEFT)
@@ -252,7 +248,7 @@ def abrirAutores():
         bntListar.pack(side=LEFT)
 
         bntLimpar = Button(painelDeBotoes, text="Limpar todas as caixas", font=fonte, width=20)
-        bntLimpar["command"] = lambda: limpar1()
+        bntLimpar["command"] = lambda: limpar()
         bntLimpar.pack(side=BOTTOM)
 
         # ---
@@ -272,10 +268,10 @@ def abrirAutores():
         painelDeLista["pady"] = 15
         painelDeLista.pack()
 
-        global listBox
-        listBox = Listbox(painelDeLista)
-        listBox["font"] = ("Verdana", "9", "italic")
-        listBox.pack()
+        global listBoxAutores
+        listBoxAutores = Listbox(painelDeLista)
+        listBoxAutores["font"] = ("Verdana", "9", "italic")
+        listBoxAutores.pack()
 
         janela.mainloop()
 
@@ -295,7 +291,7 @@ def abrirLivros():
         txtCodigoLivro.delete(0, END)
         txtNomeLivro.delete(0, END)
         txtPrecoLivro.delete(0, END)
-        txtNomeAutor.delete(0, END)
+        txtNomeAutorLivro.delete(0, END)
         lblmsg1["text"] = 'Caixas de entradas limpadas com sucesso'
 
     def limpar2():
@@ -324,7 +320,7 @@ def abrirLivros():
 
             txtNomeLivro.insert(END, f"{dadosLivro[0]}")
             txtPrecoLivro.insert(END, f"{dadosLivro[1]}")
-            txtNomeAutor.insert(END, f"{dadosLivro[2]}")
+            txtNomeAutorLivro.insert(END, f"{dadosLivro[2]}")
 
     # OPCAO 1 - 4
     def cadastreLivro(conexao):
@@ -335,7 +331,7 @@ def abrirLivros():
         except ValueError:
             lblmsg1["text"] = 'Preço inválido'
         else:
-            nomeAutor = txtNomeAutor.get()  # recupera o que foi digitado na caixa de texto txtNomeAutor
+            nomeAutor = txtNomeAutorLivro.get()  # recupera o que foi digitado na caixa de texto txtNomeAutor
             cursor.execute(f"SELECT Id FROM Autores WHERE Nome='{nomeAutor}'")
             linha = cursor.fetchone()
             if not linha:
@@ -374,7 +370,6 @@ def abrirLivros():
             cursor.execute(f"DELETE FROM Livros   WHERE Codigo= {codigoLivro}")
             conexao.commit()
             lblmsg1["text"] = 'Livro removido com sucesso'
-            # txtNomeLivro.delete(0, END)  # limpa o que estava escrito na caixa de texto txtNomeAutor
 
     # - opcoes de listagem
 
@@ -632,11 +627,11 @@ def abrirLivros():
         lblNomeAutor = Label(painelNomeAutor, text="Nome Autor", font=fonte, width=10)
         lblNomeAutor.pack(side=LEFT)
 
-        global txtNomeAutor
-        txtNomeAutor = Entry(painelNomeAutor)
-        txtNomeAutor["width"] = 25
-        txtNomeAutor["font"] = fonte
-        txtNomeAutor.pack(side=LEFT)
+        global txtNomeAutorLivro
+        txtNomeAutorLivro = Entry(painelNomeAutor)
+        txtNomeAutorLivro["width"] = 25
+        txtNomeAutorLivro["font"] = fonte
+        txtNomeAutorLivro.pack(side=LEFT)
 
         # --- Mensagem label
 
