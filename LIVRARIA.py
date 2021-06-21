@@ -1,4 +1,14 @@
 from tkinter import *
+import os
+os.chdir("C:")
+os.chdir("C:\\oraclexe\\app\\oracle\\instantclient_19_10") #obs: endereço depende da instalação do oracle
+
+# coding: utf-8
+import cx_Oracle
+
+servidor = 'localhost/xe'
+usuario = 'RH'
+senha = 'senha'
 
 root = Tk()
 
@@ -11,16 +21,7 @@ titulo["font"] = ("Calibri", "12", "bold")
 titulo.pack()
 
 def abrirAutores():
-    import os
-    os.chdir("C:")
-    os.chdir(
-        "C:\\Users\\Shinjo-PC\\Documents\\Downloads\\instantclient-basic-windows.x64-19.11.0.0.0dbru\\instantclient_19_11")
-
-    # coding: utf-8
-    import cx_Oracle
-
-
-
+    
     def limpar():
         listBoxAutores.delete(0, END)
         txtIdAutor.delete(0, END)
@@ -87,10 +88,7 @@ def abrirAutores():
                 linha = cursor.fetchone()
 
     def programa():
-        servidor = 'localhost/xe'
-        usuario = 'SYSTEM'
-        senha = 'aluno'
-
+        
         try:
             conexao = cx_Oracle.connect(dsn=servidor, user=usuario, password=senha)
             cursor = conexao.cursor()
@@ -260,13 +258,6 @@ def abrirAutores():
     programa()
 
 def abrirLivros():
-    import os
-
-    os.chdir("C:")
-    os.chdir(
-        "C:\\Users\\Shinjo-PC\\Documents\\Downloads\\instantclient-basic-windows.x64-19.11.0.0.0dbru\\instantclient_19_11")
-    # coding: utf-8
-    import cx_Oracle
 
     # Função que limpa as caixinhas
     def limpar1():
@@ -459,10 +450,6 @@ def abrirLivros():
                 linha = cursor.fetchone()
 
     def programa():
-
-        servidor = 'localhost/xe'
-        usuario = 'SYSTEM'
-        senha = 'aluno'
 
         try:
             conexao = cx_Oracle.connect(dsn=servidor, user=usuario, password=senha)
